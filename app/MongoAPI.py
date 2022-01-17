@@ -29,31 +29,31 @@ class MongoAPI:
         self.collection = cursor[collection]
         self.data = data
         try:
-            self.collection.create_index([("key", 1)], unique=True)
+            self.collection.create_index([("table", 1), ("key", 1)], unique=True)
         except errors.PyMongoError as error:
             print(error)
             pass
 
-    def get_value(self, key):
-        rec = self.collection.find_one({'key': key})
+    def get_value(self, table, key):
+        rec = self.collection.find_one({"table": table, "key": key})
         print("documents", rec)
         # output = {item: rec[item] for item in rec if item != '_id'}
         return rec['value']
 
-    def set_value(self, key, value):
-        data = {"key": key, "value": value}
-        rec = self.collection.find_one({'key': key})
+    def set_value(self, table, key, value):
+        data = {"table": table, "key": key, "value": value}
+        rec = self.collection.find_one({"table": table, "key": key})
         if rec is None:
             print("value", value)
             response = self.collection.insert_one(data)
             return True
         else:
-            response = self.collection.find_one_and_replace(filter={'key': key}, replacement=data)
+            response = self.collection.find_one_and_replace(filter={"table": table, "key": key}, replacement=data)
             print("response", response)
             return True
 
-    def delete_pair(self, key):
-        response = self.collection.delete_one({'key': key})
+    def delete_pair(self, table, key):
+        response = self.collection.delete_one({"table": table, "key": key})
         return response.deleted_count
 
 

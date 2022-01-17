@@ -32,8 +32,10 @@ app = FastAPI(title='TEXT SEARCH API')
 
 
 class Document(BaseModel):
+    table: str
     key: str
     value: object
+
 
 
 @app.get('/')
@@ -41,11 +43,11 @@ async def base():
     return {"status": "up"}
 
 
-@app.get('/api/get/{key}')
-async def get_value(key: str):
-    print("get_value", key)
+@app.get('/api/{table}/get/{key}')
+async def get_value(table: str, key: str):
+    print("get_value", table, key)
     try:
-        response = db.get_value(key)
+        response = db.get_value(table, key)
     except errors.PyMongoError as error:
         print(error._message)
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Connection error")
@@ -55,11 +57,11 @@ async def get_value(key: str):
     return response
 
 
-@app.post('/api/set/{key}')
-async def set_value(key: str, doc: dict, status_code=201):
-    print(f"set_value {key} for {doc}")
+@app.post('/api/{table}/set/{key}')
+async def set_value(table: str, key: str, doc: dict, status_code=201):
+    print(f"set_value {table} {key} for {doc}")
     try:
-        success = db.set_value(key, doc)
+        success = db.set_value(table, key, doc)
     except errors.DuplicateKeyError as error:
         print(error._message)
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Document already exists")
@@ -73,10 +75,10 @@ async def set_value(key: str, doc: dict, status_code=201):
     return response
 
 
-@app.delete('/api/del/{key}')
-async def mongo_delete(key: str):
+@app.delete('/api/{table}/del/{key}')
+async def mongo_delete(table: str, key: str):
     try:
-        delete_count = db.delete_pair(key)
+        delete_count = db.delete_pair(table, key)
         if delete_count == 0:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document not found!")
         return {'deleted': key}
