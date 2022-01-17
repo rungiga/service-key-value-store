@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "service-key-value-store"
+version = "0.1.0"
+description = ""
+authors = ["Vasiliy <vkraskov@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.71.0"
+pydantic = "^1.9.0"
+uvicorn = "^0.17.0"
+starlette = "^0.17.1"
+pymongo = "^4.0.1"
+databases = "^0.5.4"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

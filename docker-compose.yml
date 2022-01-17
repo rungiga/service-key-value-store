@@ -1,0 +1,42 @@
+version: '3.9'
+services:
+ text-search:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: text-search
+    hostname: text-search
+    environment:
+      APP_DEBUG: "True"
+      APP_PORT: ${APP_PORT}
+      APP_HOST: ${APP_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DAT_HOST: ${DAT_HOST}
+      DAT_PORT: ${DAT_PORT}
+    ports:
+      - "5001:5001"
+    depends_on:
+      - mongodb
+    networks:
+      - backend
+ mongodb:
+    image: mongo
+    hostname: ${DAT_HOST}
+    container_name: mongodb
+    restart: unless-stopped
+    command: mongod --bind_ip 0.0.0.0 
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+      MONGODB_DATA_DIR: /data/db
+      MONDODB_LOG_DIR: /dev/null
+    ports:
+      - "5000:27017"
+    volumes:
+      - ${DAT_VOLUME}:/data/db
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge
