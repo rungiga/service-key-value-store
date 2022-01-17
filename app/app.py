@@ -72,20 +72,21 @@ async def set_value(key: str, doc: dict, status_code=201):
     response = {'status': 'Successfully Inserted'}
     return response
 
-#
-# @app.delete('/api/doc/delete/{guid}')
-# def mongo_delete(guid: UUID4):
-#     try:
-#         delete_cout = db.delete(guid)
-#         if delete_cout == 0:
-#             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document not found!")
-#         return {'deleted': guid}
-#     except errors.WriteError as error:
-#         print(error._message)
-#         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Document already exists")
-#     except errors.PyMongoError as error:
-#         print(error._message)
-#         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Connection error")
+
+@app.delete('/api/del/{key}')
+async def mongo_delete(key: str):
+    try:
+        delete_count = db.delete_pair(key)
+        if delete_count == 0:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document not found!")
+        return {'deleted': key}
+    except errors.WriteError as error:
+        print(error._message)
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Document already exists")
+    except errors.PyMongoError as error:
+        print(error._message)
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Connection error")
+
 
 #
 # @app.get('/api/doc/search')

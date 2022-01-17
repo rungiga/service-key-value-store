@@ -1,8 +1,6 @@
 
-
-
-export APP_HOST=0.0.0.0
-export APP_PORT=8082
+export APP_HOST="0.0.0.0"
+export APP_PORT=8083
 
 export DAT_HOST=192.168.1.184
 export DAT_PORT=27017
@@ -11,7 +9,28 @@ export DB_PASSWORD=pass
 export DB_DATABASE=admin
 
 
-docker build -t text-search .
-docker rm text-search
-docker run  --name text-search -e APP_HOST=${APP_HOST} -e APP_PORT=${APP_PORT} -e DAT_HOST=${DAT_HOST} -e DAT_PORT=${DAT_PORT} -e DB_USER=${DB_USER} -e DB_PASSWORD=${DB_PASSWORD} -e DB_DATABASE=${DB_DATABASE} -p ${APP_PORT}:${APP_PORT} text-search
+docker build -t key-value .
+
+docker stop key-value
+docker rm key-value
+
+mongodb://myUserAdmin:pass@192.168.1.184:27017/admin
+
+
+docker rm key-value
+
+docker run  --name key-value -e APP_HOST=${APP_HOST} -e APP_PORT=${APP_PORT} -e DAT_HOST=${DAT_HOST} -e DAT_PORT=${DAT_PORT} -e DB_USER=${DB_USER} -e DB_PASSWORD=${DB_PASSWORD} -e DB_DATABASE=${DB_DATABASE} -p ${APP_PORT}:${APP_PORT} text-search
+
+
+
+curl -X POST -w "%{http_code}\n" -H "Content-Type: application/json" --data '{ "user_id":"3243242" }' 'http://localhost:8083/api/set/cd75423e'
+
+curl -X GET -w "%{http_code}\n" -H "Content-Type: application/json"  'http://localhost:8083/api/get/cd75423e'
+
+curl -X POST -w "%{http_code}\n" -H "Content-Type: application/json" --data '{ "user_id":"456" }' 'http://localhost:8083/api/set/34534534'
+
+curl -X GET -w "%{http_code}\n" -H "Content-Type: application/json"  'http://localhost:8083/api/get/34534534'
+
+curl -X DELETE -w "%{http_code}\n" -H "Content-Type: application/json"  'http://localhost:8083/api/del/34534534'
+
 

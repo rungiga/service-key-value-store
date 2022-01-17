@@ -52,9 +52,10 @@ class MongoAPI:
             print("response", response)
             return True
 
-    # def delete(self, guid):
-    #     response = self.collection.delete_one({'guid': guid})
-    #     return response.deleted_count
+    def delete_pair(self, key):
+        response = self.collection.delete_one({'key': key})
+        return response.deleted_count
+
 
     # def search(self, text, fuzzy, limit, threshold, user_id=None):
     #     if fuzzy:
