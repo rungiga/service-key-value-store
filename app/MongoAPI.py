@@ -36,6 +36,8 @@ class MongoAPI:
 
     def get_value(self, table, key):
         rec = self.collection.find_one({"table": table, "key": key})
+        if rec is None:
+            return None
         print("documents", rec)
         # output = {item: rec[item] for item in rec if item != '_id'}
         return rec['value']
